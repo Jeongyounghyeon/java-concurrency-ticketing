@@ -14,7 +14,7 @@ import java.util.concurrent.Executors
 
 @SpringBootTest
 class ConcertServiceTest @Autowired constructor(
-    private val concertService: ConcertService,
+    private val optimisticLockConcertFacade: OptimisticLockConcertFacade,
     private val concertRepository: ConcertRepository
 ) {
 
@@ -41,7 +41,7 @@ class ConcertServiceTest @Autowired constructor(
         for (i in 1..numberOfThreads) {
             executorService.submit {
                 try {
-                    concertService.decreaseSeats(concert!!.id, 1)
+                    optimisticLockConcertFacade.decreaseSeats(concert!!.id, 1)
                 } finally {
                     latch.countDown()
                 }
