@@ -13,8 +13,8 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 
 @SpringBootTest
-class ConcertServiceTest @Autowired constructor(
-    private val optimisticLockConcertFacade: OptimisticLockConcertFacade,
+class PessimisticLockConcertServiceTest @Autowired constructor(
+    private val pessimisticLockConcertService: PessimisticLockConcertService,
     private val concertRepository: ConcertRepository
 ) {
 
@@ -31,7 +31,7 @@ class ConcertServiceTest @Autowired constructor(
     }
 
     @Test
-    fun `낙관적 락 - 100명의 사용자가 동시에 좌석을 예매하면 재고가 0이 되어야 한다`() {
+    fun `비관적 락 - 100명의 사용자가 동시에 좌석을 예매하면 재고가 0이 되어야 한다`() {
         // given
         val numberOfThreads = 100
         val executorService = Executors.newFixedThreadPool(numberOfThreads)
@@ -41,7 +41,7 @@ class ConcertServiceTest @Autowired constructor(
         for (i in 1..numberOfThreads) {
             executorService.submit {
                 try {
-                    optimisticLockConcertFacade.decreaseSeats(concert!!.id, 1)
+                    pessimisticLockConcertService.decreaseSeats(concert!!.id, 1)
                 } finally {
                     latch.countDown()
                 }
