@@ -1,1 +1,7 @@
 spring.application.name: ticketing-service
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379

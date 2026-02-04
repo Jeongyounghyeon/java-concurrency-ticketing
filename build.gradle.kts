@@ -8,7 +8,6 @@ plugins {
 
 group = "io.github.jeongyounghyeon"
 version = "0.0.1-SNAPSHOT"
-description = "ticketing-service"
 
 java {
     toolchain {
@@ -23,6 +22,8 @@ repositories {
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.redisson:redisson:4.1.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
