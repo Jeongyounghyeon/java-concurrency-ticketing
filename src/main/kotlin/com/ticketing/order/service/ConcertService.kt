@@ -12,6 +12,11 @@ class ConcertService(
     @Transactional
     fun decreaseSeats(concertId: Long, quantity: Int) {
         val concert = concertRepository.findById(concertId).orElseThrow { IllegalArgumentException("Concert not found") }
+        
+        if (concert.availableSeats < quantity) {
+            throw IllegalArgumentException("Not enough seats available.")
+        }
+
         concert.availableSeats -= quantity
     }
 }
