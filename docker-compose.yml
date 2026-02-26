@@ -1,5 +1,43 @@
 version: '3.8'
 services:
+  # Zookeeper
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  # Kafka
+  kafka:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  # AKHQ (Kafka Web UI)
+  akhq:
+    image: tchiotludo/akhq
+    container_name: akhq
+    ports:
+      - "8081:8080"
+    depends_on:
+      - kafka
+    environment:
+      AKHQ_CONFIGURATION: |
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka:9092"
+
   # MySQL Database
   mysql:
     image: mysql:8.0
@@ -28,12 +66,14 @@ services:
     depends_on:
       - mysql
       - redis
+      - kafka
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/market_db?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_PROFILES_ACTIVE=redis
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
 
@@ -45,12 +85,14 @@ services:
     depends_on:
       - mysql
       - redis
+      - kafka
     environment:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/market_db?useSSL=false&allowPublicKeyRetrieval=true
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DATA_REDIS_HOST=redis
       - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - SPRING_PROFILES_ACTIVE=redis
       - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
 

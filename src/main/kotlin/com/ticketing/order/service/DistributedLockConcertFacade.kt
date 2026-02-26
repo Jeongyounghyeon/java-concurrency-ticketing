@@ -9,10 +9,10 @@ import java.util.concurrent.TimeUnit
 @Profile("redis")
 class DistributedLockConcertFacade(
     private val redissonClient: RedissonClient,
-    private val concertService: ConcertService
+    private val concertService: ConcertService // 이제 ConcertService는 Kafka 전송 담당
 ) {
 
-    fun decreaseSeats(concertId: Long, quantity: Int) {
+    fun decreaseSeats(concertId: Long, quantity: Int, userId: String) {
         val lock = redissonClient.getLock("concert_lock:$concertId")
 
         try {
@@ -24,7 +24,8 @@ class DistributedLockConcertFacade(
                 return
             }
 
-            concertService.decreaseSeats(concertId, quantity)
+            // Kafka로 주문 요청 전송
+            concertService.requestOrder(concertId, quantity, userId)
         } catch (e: InterruptedException) {
             throw RuntimeException(e)
         } finally {

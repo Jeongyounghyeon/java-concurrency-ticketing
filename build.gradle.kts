@@ -23,16 +23,20 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation("org.springframework.boot:spring-boot-starter-kafka") // starter로 변경
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.redisson:redisson:4.1.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    testImplementation("org.testcontainers:mysql")
+    
     runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.mysql:mysql-connector-j")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("org.testcontainers:testcontainers-junit-jupiter")
+    testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:mysql:1.19.7")
-    runtimeOnly("com.mysql:mysql-connector-j")
+    testImplementation("org.testcontainers:kafka")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

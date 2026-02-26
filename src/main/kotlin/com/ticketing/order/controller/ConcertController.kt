@@ -26,6 +26,6 @@ class ConcertController(
         if (!waitingQueueService.isAllowed(userId)) {
             throw IllegalStateException("Access denied. Please wait in the queue.")
         }
-        distributedLockConcertFacade.decreaseSeats(id, quantity)
+        distributedLockConcertFacade.decreaseSeats(id, quantity, userId)
     }
 }
